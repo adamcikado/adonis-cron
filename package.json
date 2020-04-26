@@ -1,5 +1,5 @@
 {
-  "name": "adonis-scheduler",
+  "name": "adonis-cron",
   "version": "3.0.2",
   "description": "Easy task scheduling for AdonisJS",
   "scripts": {
@@ -13,7 +13,8 @@
   },
   "author": "Nicholas Rempel <nbrempel@gmail.com>",
   "contributors": [
-    "Artem Kolesnik <ya@artemkolesnik.ru>"
+    "Artem Kolesnik <ya@artemkolesnik.ru>",
+    "Andrej Adamcik"
   ],
   "license": "MIT",
   "dependencies": {
@@ -48,7 +49,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nrempel/adonis-scheduler.git"
+    "url": "git+https://github.com/adamcikado/adonis-cron.git"
   },
   "keywords": [
     "adonis",
@@ -78,7 +79,7 @@
     "src/"
   ],
   "bugs": {
-    "url": "https://github.com/nrempel/adonis-scheduler/issues"
+    "url": "https://github.com/adamcikado/adonis-cron/issues"
   },
-  "homepage": "https://github.com/nrempel/adonis-scheduler#readme"
+  "homepage": "https://github.com/adamcikado/adonis-cron#readme"
 }
