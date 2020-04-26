@@ -101,6 +101,7 @@ class Task {
    */
   async _run () {
     const useLock = this.constructor.useLock
+    let resolveTask
 
     if (useLock) {
       const locked = await this.locker.check()
@@ -110,6 +111,10 @@ class Task {
       }
 
       await this.locker.lock()
+
+      this._runningTask = new Promise((resolve) => {
+        resolveTask = resolve
+      })
     }
 
     this.startedAt = new Date()
@@ -125,6 +130,12 @@ class Task {
 
     if (useLock) {
       await this.locker.unlock()
+
+      delete this._runningTask
+
+      if (resolveTask) {
+        resolveTask()
+      }
     }
   }
 

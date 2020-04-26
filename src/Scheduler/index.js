@@ -26,6 +26,7 @@ class Scheduler {
     this.Helpers = Helpers
     this.instance = require('node-schedule')
     this.registeredTasks = []
+    this.scheduledJobs = []
 
     this._configureTasksPath()
   }
@@ -88,7 +89,8 @@ class Scheduler {
     }
 
     // Register task handler
-    this.instance.scheduleJob(task.schedule, taskInstance._run.bind(taskInstance))
+    const job = this.instance.scheduleJob(task.schedule, taskInstance._run.bind(taskInstance))
+    this.scheduledJobs.push(job)
   }
 
   /**
@@ -111,6 +113,8 @@ class Scheduler {
       throw e
     }
 
+    this.registerShutdownHandler()
+
     taskFiles = taskFiles.filter(file => path.extname(file) === '.js')
 
     for (let taskFile of taskFiles) {
@@ -118,6 +122,22 @@ class Scheduler {
     }
 
     debug('scheduler running %d tasks', this.registeredTasks.length)
+  }
+
+  registerShutdownHandler() {
+    process.on('SIGINT', this.onShutdown.bind(this))
+  }
+
+  async onShutdown() {
+    this.scheduledJobs.forEach(job => {
+      job.cancel()
+    })
+
+    await Promise.all(this.registeredTasks.map(task => {
+      return task._runningTask ? task._runningTask : Promise.resolve()
+    }))
+
+    process.exit(0)
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "adonis-cron",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Easy task scheduling for AdonisJS",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
