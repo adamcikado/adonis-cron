@@ -16,14 +16,15 @@ class Scheduler {
    * @return {Array}
    */
   static get inject () {
-    return ['Adonis/Src/Helpers']
+    return ['Adonis/Src/Config', 'Adonis/Src/Helpers']
   }
 
   /**
    * @param {Object} Helpers
    */
-  constructor (Helpers) {
+  constructor (Config, Helpers) {
     this.Helpers = Helpers
+    this.config = Config.get('cron', {})
     this.instance = require('node-schedule')
     this.registeredTasks = []
     this.scheduledJobs = []
@@ -133,9 +134,25 @@ class Scheduler {
       job.cancel()
     })
 
+    let shutdownTimeout
+
+    if (this.config.shutdownTimeout) {
+      shutdownTimeout = setTimeout(() => {
+        process.exit(0)
+      }, this.config.shutdownTimeout)
+    }
+
     await Promise.all(this.registeredTasks.map(task => {
+      if (task.cancel) {
+        task.cancel()
+      }
+
       return task._runningTask ? task._runningTask : Promise.resolve()
     }))
+
+    if (shutdownTimeout) {
+      clearTimeout(shutdownTimeout)
+    }
 
     process.exit(0)
   }
